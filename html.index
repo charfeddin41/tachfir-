@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لعبة التنقل والتشفير التفاعلية</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin: 5px 0;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .game-section {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* قسم التنقل */
+        .navigation-table-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .navigation-table {
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .navigation-table th {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            font-size: 1.2rem;
+            color: #FFD700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            width: 60px;
+            height: 60px;
+        }
+
+        .navigation-table td {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .navigation-table td:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        .navigation-table td.player {
+            background: #4CAF50;
+            border-color: #45a049;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.6);
+            transform: scale(1.1);
+        }
+
+        .navigation-table td.target {
+            background: #FF6B6B;
+            border-color: #ff5252;
+            animation: pulse 1.5s infinite;
+        }
+
+        .navigation-table td.path {
+            background: rgba(255, 193, 7, 0.3);
+            border-color: #FFC107;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .arrows-sequence {
+            margin: 15px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .sequence-title {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .arrows-container {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            min-height: 50px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .arrow-in-sequence {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            margin: 2px;
+        }
+
+        .arrow-palette {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .arrow-item {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .arrow-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .cipher-table-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .cipher-table {
+            border-collapse: collapse;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .cipher-table th {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            font-size: 1.2rem;
+            color: #FFD700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .cipher-table td {
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .cipher-table td:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .cipher-table td.selected {
+            background: rgba(76, 175, 80, 0.5);
+            border-color: #4CAF50;
+        }
+
+        .cipher-table td.correct {
+            background: rgba(76, 175, 80, 0.7);
+            border-color: #4CAF50;
+            animation: correctAnswer 0.6s ease;
+        }
+
+        .cipher-table td.wrong {
+            background: rgba(244, 67, 54, 0.7);
+            border-color: #f44336;
+            animation: wrongAnswer 0.6s ease;
+        }
+
+        .execute-btn {
+            background: linear-gradient(45deg, #FF6B6B, #ff5252);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .execute-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .execute-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* قسم التشفير */
+        .cipher-container {
+            text-align: center;
+        }
+
+        .cipher-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+            max-width: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cipher-item {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cipher-item:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .cipher-item.selected {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.3);
+        }
+
+        .cipher-item.correct {
+            border-color: #4CAF50;
+            background: rgba(76, 175, 80, 0.5);
+            animation: correctAnswer 0.6s ease;
+        }
+
+        .cipher-item.wrong {
+            border-color: #f44336;
+            background: rgba(244, 67, 54, 0.5);
+            animation: wrongAnswer 0.6s ease;
+        }
+
+        @keyframes correctAnswer {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        @keyframes wrongAnswer {
+            0%, 25%, 50%, 75%, 100% { transform: translateX(0); }
+            12.5%, 37.5%, 62.5%, 87.5% { transform: translateX(-5px); }
+        }
+
+        .cipher-emoji {
+            font-size: 2.5rem;
+            margin-bottom: 8px;
+        }
+
+        .cipher-letter {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .cipher-question {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+        }
+
+        .target-display {
+            font-size: 3rem;
+            margin: 10px 0;
+            padding: 15px;
+            background: rgba(255, 193, 7, 0.3);
+            border-radius: 15px;
+            border: 2px solid #FFC107;
+        }
+
+        .cipher-input {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+            margin: 10px 0;
+            width: 200px;
+        }
+
+        .cipher-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .score-item {
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .new-game-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .new-game-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .cipher-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎮 لعبة التنقل والتشفير التفاعلية</h1>
+        <div class="subtitle">السنة الثالثة ج</div>
+        <div class="subtitle">من تصميم الأستاذ بن وارث شرف الدين</div>
+    </div>
+
+    <div class="game-container">
+        <!-- قسم التنقل -->
+        <div class="game-section">
+            <h2 class="section-title">🐱 لعبة تحريك الحيوان بالتشفير</h2>
+            <div class="score-board">
+                <div class="score-item">
+                    <div>النقاط</div>
+                    <div class="score-value" id="navigationScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div>المستوى</div>
+                    <div class="score-value" id="navigationLevel">1</div>
+                </div>
+            </div>
+            
+            <div class="navigation-table-container">
+                <table class="navigation-table" id="navigationTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>أ</th>
+                            <th>ب</th>
+                            <th>ج</th>
+                            <th>د</th>
+                            <th>هـ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td id="nav-cell-0-0" onclick="moveToCell(0, 0)"></td>
+                            <td id="nav-cell-0-1" onclick="moveToCell(0, 1)"></td>
+                            <td id="nav-cell-0-2" onclick="moveToCell(0, 2)"></td>
+                            <td id="nav-cell-0-3" onclick="moveToCell(0, 3)"></td>
+                            <td id="nav-cell-0-4" onclick="moveToCell(0, 4)"></td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td id="nav-cell-1-0" onclick="moveToCell(1, 0)"></td>
+                            <td id="nav-cell-1-1" onclick="moveToCell(1, 1)"></td>
+                            <td id="nav-cell-1-2" onclick="moveToCell(1, 2)"></td>
+                            <td id="nav-cell-1-3" onclick="moveToCell(1, 3)"></td>
+                            <td id="nav-cell-1-4" onclick="moveToCell(1, 4)"></td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td id="nav-cell-2-0" onclick="moveToCell(2, 0)"></td>
+                            <td id="nav-cell-2-1" onclick="moveToCell(2, 1)"></td>
+                            <td id="nav-cell-2-2" onclick="moveToCell(2, 2)"></td>
+                            <td id="nav-cell-2-3" onclick="moveToCell(2, 3)"></td>
+                            <td id="nav-cell-2-4" onclick="moveToCell(2, 4)"></td>
+                        </tr>
+                        <tr>
+                            <th>4</th>
+                            <td id="nav-cell-3-0" onclick="moveToCell(3, 0)"></td>
+                            <td id="nav-cell-3-1" onclick="moveToCell(3, 1)"></td>
+                            <td id="nav-cell-3-2" onclick="moveToCell(3, 2)"></td>
+                            <td id="nav-cell-3-3" onclick="moveToCell(3, 3)"></td>
+                            <td id="nav-cell-3-4" onclick="moveToCell(3, 4)"></td>
+                        </tr>
+                        <tr>
+                            <th>5</th>
+                            <td id="nav-cell-4-0" onclick="moveToCell(4, 0)"></td>
+                            <td id="nav-cell-4-1" onclick="moveToCell(4, 1)"></td>
+                            <td id="nav-cell-4-2" onclick="moveToCell(4, 2)"></td>
+                            <td id="nav-cell-4-3" onclick="moveToCell(4, 3)"></td>
+                            <td id="nav-cell-4-4" onclick="moveToCell(4, 4)"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="text-align: center; margin: 15px 0; font-size: 1.1rem;">
+                استخدم التشفير (حرف + رقم) لتحريك الحيوان للهدف:
+            </div>
+            
+            <div class="arrows-sequence" id="arrowsSequence">
+                <div class="sequence-title">التشفير المطلوب:</div>
+                <div class="arrows-container" id="cipherCode" style="font-size: 1.5rem; color: #FFD700;"></div>
+            </div>
+            
+            <div style="text-align: center; margin: 15px 0; font-size: 1.1rem;">
+                اضغط على الخانات لتحريك القط حسب التشفير المطلوب
+            </div>
+            
+            <div style="text-align: center;">
+                <button class="new-game-btn" onclick="startNewNavigationGame()">لعبة جديدة</button>
+            </div>
+        </div>
+
+        <!-- قسم التشفير -->
+        <div class="game-section">
+            <h2 class="section-title">🔐 لعبة الجدول المشفر</h2>
+            <div class="score-board">
+                <div class="score-item">
+                    <div>النقاط</div>
+                    <div class="score-value" id="cipherScore">0</div>
+                </div>
+                <div class="score-item">
+                    <div>الصحيحة</div>
+                    <div class="score-value" id="correctAnswers">0</div>
+                </div>
+            </div>
+            
+            <div class="cipher-question">
+                اختر الخانة الصحيحة للتشفير: <span id="cipherCode2" style="color: #FFD700; font-size: 1.5rem;">أ2</span>
+            </div>
+            
+            <div class="cipher-table-container">
+                <table class="cipher-table" id="cipherTable">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>أ</th>
+                            <th>ب</th>
+                            <th>ج</th>
+                            <th>د</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>1</th>
+                            <td onclick="selectCell(0,0)" id="cell-0-0"></td>
+                            <td onclick="selectCell(0,1)" id="cell-0-1"></td>
+                            <td onclick="selectCell(0,2)" id="cell-0-2"></td>
+                            <td onclick="selectCell(0,3)" id="cell-0-3"></td>
+                        </tr>
+                        <tr>
+                            <th>2</th>
+                            <td onclick="selectCell(1,0)" id="cell-1-0"></td>
+                            <td onclick="selectCell(1,1)" id="cell-1-1"></td>
+                            <td onclick="selectCell(1,2)" id="cell-1-2"></td>
+                            <td onclick="selectCell(1,3)" id="cell-1-3"></td>
+                        </tr>
+                        <tr>
+                            <th>3</th>
+                            <td onclick="selectCell(2,0)" id="cell-2-0"></td>
+                            <td onclick="selectCell(2,1)" id="cell-2-1"></td>
+                            <td onclick="selectCell(2,2)" id="cell-2-2"></td>
+                            <td onclick="selectCell(2,3)" id="cell-2-3"></td>
+                        </tr>
+                        <tr>
+                            <th>4</th>
+                            <td onclick="selectCell(3,0)" id="cell-3-0"></td>
+                            <td onclick="selectCell(3,1)" id="cell-3-1"></td>
+                            <td onclick="selectCell(3,2)" id="cell-3-2"></td>
+                            <td onclick="selectCell(3,3)" id="cell-3-3"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div style="text-align: center; margin: 20px 0;">
+                <div id="selectedCoordinate" style="font-size: 1.2rem; margin: 10px 0; color: #FFD700;"></div>
+                <button class="new-game-btn" onclick="startNewCipherGame()">سؤال جديد</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // متغيرات لعبة التنقل
+        let playerPosition = { x: 0, y: 0 };
+        let targetPosition = { x: 4, y: 4 };
+        let navigationScore = 0;
+        let navigationLevel = 1;
+        const gridSize = 5;
+        let correctCipherCode = '';
+        let correctPath = [];
+        let currentStep = 0;
+
+        // متغيرات لعبة التشفير
+        let cipherScore = 0;
+        let correctAnswers = 0;
+        let currentCipherCode = '';
+        let currentTargetPosition = { row: 0, col: 0 };
+        
+        const tableItems = [
+            '🐱', '🐶', '🐰', '🐸',
+            '🐯', '🐨', '🐼', '🦁',
+            '🐘', '🦒', '🐧', '🦋',
+            '🐢', '🦅', '🐺', '🌸'
+        ];
+
+        // تشفير الحركات
+        const movementCipher = {
+            'أ': 'up',    // أعلى
+            'ب': 'down',  // أسفل  
+            'ج': 'right', // يمين
+            'د': 'left'   // يسار
+        };
+
+        // أصوات تفاعلية (محاكاة بصرية)
+        function playSound(type) {
+            const soundEmojis = {
+                move: '🔊',
+                success: '🎉',
+                wrong: '❌',
+                correct: '✅',
+                drag: '👆'
+            };
+            
+            const soundElement = document.createElement('div');
+            soundElement.textContent = soundEmojis[type];
+            soundElement.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                font-size: 2rem;
+                z-index: 1000;
+                animation: soundPop 1s ease-out forwards;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes soundPop {
+                    0% { transform: scale(0); opacity: 1; }
+                    50% { transform: scale(1.2); opacity: 1; }
+                    100% { transform: scale(0); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+            document.body.appendChild(soundElement);
+            
+            setTimeout(() => {
+                if (document.body.contains(soundElement)) document.body.removeChild(soundElement);
+                if (document.head.contains(style)) document.head.removeChild(style);
+            }, 1000);
+        }
+
+        // إنشاء جدول التنقل
+        function createNavigationTable() {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const cellId = `nav-cell-${row}-${col}`;
+                    const cell = document.getElementById(cellId);
+                    
+                    // مسح المحتوى والكلاسات السابقة
+                    cell.textContent = '';
+                    cell.classList.remove('player', 'target', 'path');
+                    
+                    if (col === playerPosition.x && row === playerPosition.y) {
+                        cell.classList.add('player');
+                        cell.textContent = '🐱';
+                    } else if (col === targetPosition.x && row === targetPosition.y) {
+                        cell.classList.add('target');
+                        cell.textContent = '🎯';
+                    }
+                }
+            }
+        }
+
+        // حساب التشفير الصحيح والمسار
+        function calculateCorrectCipher() {
+            let cipher = '';
+            let currentX = playerPosition.x;
+            let currentY = playerPosition.y;
+            const columns = ['أ', 'ب', 'ج', 'د', 'هـ'];
+            correctPath = [];
+            
+            while (currentX !== targetPosition.x || currentY !== targetPosition.y) {
+                if (currentX < targetPosition.x) {
+                    currentX++;
+                } else if (currentX > targetPosition.x) {
+                    currentX--;
+                } else if (currentY < targetPosition.y) {
+                    currentY++;
+                } else if (currentY > targetPosition.y) {
+                    currentY--;
+                }
+                
+                // إضافة الموقع للمسار
+                correctPath.push({ x: currentX, y: currentY });
+                
+                // إضافة التشفير للموقع الجديد
+                const coordinate = columns[currentX] + (currentY + 1);
+                cipher += (cipher ? ' - ' : '') + coordinate;
+            }
+            
+            return cipher;
+        }
+
+        // عرض التشفير الصحيح
+        function displayCorrectCipher() {
+            correctCipherCode = calculateCorrectCipher();
+            const container = document.getElementById('cipherCode');
+            container.textContent = correctCipherCode;
+        }
+
+        // النقر على خانة للانتقال إليها
+        function moveToCell(row, col) {
+            // التحقق من أن هذه هي الخطوة الصحيحة التالية
+            if (currentStep < correctPath.length) {
+                const expectedMove = correctPath[currentStep];
+                
+                if (col === expectedMove.x && row === expectedMove.y) {
+                    // حركة صحيحة
+                    playerPosition.x = col;
+                    playerPosition.y = row;
+                    currentStep++;
+                    
+                    // إضافة نقاط للحركة الصحيحة
+                    navigationScore += 5;
+                    document.getElementById('navigationScore').textContent = navigationScore;
+                    
+                    createNavigationTable();
+                    playSound('correct');
+                    
+                    // التحقق من الوصول للهدف
+                    if (playerPosition.x === targetPosition.x && playerPosition.y === targetPosition.y) {
+                        navigationScore += navigationLevel * 20;
+                        navigationLevel++;
+                        playSound('success');
+                        
+                        document.getElementById('navigationScore').textContent = navigationScore;
+                        document.getElementById('navigationLevel').textContent = navigationLevel;
+                        
+                        alert('ممتاز! وصل الحيوان للهدف!');
+                        
+                        setTimeout(() => {
+                            startNewNavigationGame();
+                        }, 2000);
+                    }
+                } else {
+                    // حركة خاطئة
+                    navigationScore = Math.max(0, navigationScore - 3);
+                    document.getElementById('navigationScore').textContent = navigationScore;
+                    playSound('wrong');
+                    
+                    // إظهار الخانة الصحيحة لفترة قصيرة
+                    const correctCellId = `nav-cell-${expectedMove.y}-${expectedMove.x}`;
+                    const correctCell = document.getElementById(correctCellId);
+                    correctCell.style.background = 'rgba(255, 193, 7, 0.5)';
+                    correctCell.style.borderColor = '#FFC107';
+                    
+                    setTimeout(() => {
+                        correctCell.style.background = '';
+                        correctCell.style.borderColor = '';
+                    }, 1000);
+                }
+            }
+        }
+
+
+
+        // إنشاء هدف جديد
+        function generateNewTarget() {
+            do {
+                targetPosition.x = Math.floor(Math.random() * gridSize);
+                targetPosition.y = Math.floor(Math.random() * gridSize);
+            } while (targetPosition.x === playerPosition.x && targetPosition.y === playerPosition.y);
+        }
+
+        // بدء لعبة تنقل جديدة
+        function startNewNavigationGame() {
+            playerPosition = { x: 0, y: 0 };
+            currentStep = 0;
+            generateNewTarget();
+            createNavigationTable();
+            displayCorrectCipher();
+        }
+
+        // إنشاء لعبة التشفير
+        function createCipherGame() {
+            // ملء الجدول بالعناصر
+            for (let row = 0; row < 4; row++) {
+                for (let col = 0; col < 4; col++) {
+                    const cellId = `cell-${row}-${col}`;
+                    const cell = document.getElementById(cellId);
+                    const itemIndex = row * 4 + col;
+                    cell.textContent = tableItems[itemIndex];
+                    cell.classList.remove('selected', 'correct', 'wrong');
+                }
+            }
+            
+            // إنشاء تشفير عشوائي
+            const columns = ['أ', 'ب', 'ج', 'د'];
+            const randomRow = Math.floor(Math.random() * 4);
+            const randomCol = Math.floor(Math.random() * 4);
+            
+            currentCipherCode = `${columns[randomCol]}${randomRow + 1}`;
+            currentTargetPosition = {
+                row: randomRow,
+                col: randomCol
+            };
+            
+            document.getElementById('cipherCode2').textContent = currentCipherCode;
+            document.getElementById('selectedCoordinate').textContent = '';
+        }
+
+        // اختيار خانة في الجدول
+        function selectCell(row, col) {
+            // إزالة التحديد السابق
+            document.querySelectorAll('.cipher-table td').forEach(cell => {
+                cell.classList.remove('selected', 'correct', 'wrong');
+            });
+            
+            const cellId = `cell-${row}-${col}`;
+            const cell = document.getElementById(cellId);
+            cell.classList.add('selected');
+            
+            // عرض الإحداثيات
+            const columns = ['أ', 'ب', 'ج', 'د'];
+            const coordinate = `${columns[col]}${row + 1}`;
+            document.getElementById('selectedCoordinate').textContent = `اخترت: ${coordinate}`;
+            
+            // فحص الإجابة
+            if (row === currentTargetPosition.row && col === currentTargetPosition.col) {
+                cell.classList.remove('selected');
+                cell.classList.add('correct');
+                cipherScore += 10;
+                correctAnswers++;
+                playSound('correct');
+                
+                document.getElementById('cipherScore').textContent = cipherScore;
+                document.getElementById('correctAnswers').textContent = correctAnswers;
+                
+                setTimeout(() => {
+                    createCipherGame();
+                }, 2000);
+            } else {
+                setTimeout(() => {
+                    cell.classList.remove('selected');
+                    cell.classList.add('wrong');
+                    playSound('wrong');
+                    
+                    // إظهار الإجابة الصحيحة
+                    const correctCellId = `cell-${currentTargetPosition.row}-${currentTargetPosition.col}`;
+                    const correctCell = document.getElementById(correctCellId);
+                    correctCell.classList.add('correct');
+                    
+                    setTimeout(() => {
+                        cell.classList.remove('wrong');
+                        correctCell.classList.remove('correct');
+                    }, 2000);
+                }, 500);
+            }
+        }
+
+        // بدء لعبة تشفير جديدة
+        function startNewCipherGame() {
+            createCipherGame();
+        }
+
+
+
+        // بدء اللعبة
+        window.onload = function() {
+            createNavigationTable();
+            displayCorrectCipher();
+            createCipherGame();
+        };
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'989ecffd4543337b',t:'MTc1OTY4NzE2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
