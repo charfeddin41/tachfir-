@@ -42,6 +42,7 @@
             gap: 30px;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 10px;
         }
 
         .game-section {
@@ -65,6 +66,8 @@
             display: flex;
             justify-content: center;
             margin: 20px 0;
+            overflow-x: auto;
+            padding: 10px 0;
         }
 
         .navigation-table {
@@ -72,6 +75,7 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             overflow: hidden;
+            min-width: 300px;
         }
 
         .navigation-table th {
@@ -160,38 +164,12 @@
             margin: 2px;
         }
 
-        .arrow-palette {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .arrow-item {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            user-select: none;
-        }
-
-        .arrow-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: scale(1.1);
-        }
-
         .cipher-table-container {
             display: flex;
             justify-content: center;
             margin: 20px 0;
+            overflow-x: auto;
+            padding: 10px 0;
         }
 
         .cipher-table {
@@ -199,6 +177,7 @@
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
             overflow: hidden;
+            min-width: 240px;
         }
 
         .cipher-table th {
@@ -264,57 +243,6 @@
             cursor: not-allowed;
         }
 
-        /* قسم التشفير */
-        .cipher-container {
-            text-align: center;
-        }
-
-        .cipher-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin: 20px 0;
-            max-width: 450px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cipher-item {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 15px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-            min-height: 100px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .cipher-item:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-5px);
-        }
-
-        .cipher-item.selected {
-            border-color: #4CAF50;
-            background: rgba(76, 175, 80, 0.3);
-        }
-
-        .cipher-item.correct {
-            border-color: #4CAF50;
-            background: rgba(76, 175, 80, 0.5);
-            animation: correctAnswer 0.6s ease;
-        }
-
-        .cipher-item.wrong {
-            border-color: #f44336;
-            background: rgba(244, 67, 54, 0.5);
-            animation: wrongAnswer 0.6s ease;
-        }
-
         @keyframes correctAnswer {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.1); }
@@ -325,51 +253,12 @@
             12.5%, 37.5%, 62.5%, 87.5% { transform: translateX(-5px); }
         }
 
-        .cipher-emoji {
-            font-size: 2.5rem;
-            margin-bottom: 8px;
-        }
-
-        .cipher-letter {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #FFD700;
-            font-family: 'Arial', sans-serif;
-        }
-
         .cipher-question {
             background: rgba(255, 255, 255, 0.2);
             padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
             font-size: 1.2rem;
-        }
-
-        .target-display {
-            font-size: 3rem;
-            margin: 10px 0;
-            padding: 15px;
-            background: rgba(255, 193, 7, 0.3);
-            border-radius: 15px;
-            border: 2px solid #FFC107;
-        }
-
-        .cipher-input {
-            background: rgba(255, 255, 255, 0.2);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            color: white;
-            font-size: 1.2rem;
-            text-align: center;
-            margin: 10px 0;
-            width: 200px;
-        }
-
-        .cipher-input:focus {
-            outline: none;
-            border-color: #4CAF50;
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .score-board {
@@ -408,18 +297,241 @@
             box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
         }
 
-        @media (max-width: 768px) {
+        /* تصميم متجاوب للشاشات المختلفة */
+        @media (max-width: 1024px) {
             .game-container {
                 grid-template-columns: 1fr;
                 gap: 20px;
+                padding: 0 15px;
             }
             
             .header h1 {
-                font-size: 2rem;
+                font-size: 2.2rem;
             }
             
-            .cipher-grid {
-                grid-template-columns: repeat(2, 1fr);
+            .navigation-table th,
+            .navigation-table td {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                padding: 10px;
+            }
+            
+            .cipher-table th,
+            .cipher-table td {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .game-container {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 0 5px;
+            }
+            
+            .header {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header .subtitle {
+                font-size: 1rem;
+            }
+            
+            .game-section {
+                padding: 20px 15px;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+            }
+            
+            .navigation-table th,
+            .navigation-table td {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+                padding: 8px;
+            }
+            
+            .cipher-table th,
+            .cipher-table td {
+                width: 45px;
+                height: 45px;
+                font-size: 1.3rem;
+                padding: 8px;
+            }
+            
+            .score-board {
+                flex-direction: row;
+                gap: 20px;
+                padding: 10px;
+            }
+            
+            .score-value {
+                font-size: 1.3rem;
+            }
+            
+            .arrows-sequence {
+                padding: 10px;
+            }
+            
+            .cipher-question {
+                padding: 15px;
+                font-size: 1.1rem;
+            }
+            
+            .execute-btn,
+            .new-game-btn {
+                padding: 12px 25px;
+                font-size: 1rem;
+                margin: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header .subtitle {
+                font-size: 0.9rem;
+            }
+            
+            .game-section {
+                padding: 15px 10px;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .navigation-table th,
+            .navigation-table td {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+                padding: 5px;
+            }
+            
+            .cipher-table th,
+            .cipher-table td {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+                padding: 5px;
+            }
+            
+            .score-board {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .score-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 10px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+            }
+            
+            .arrows-container {
+                font-size: 1.2rem !important;
+                gap: 5px;
+            }
+            
+            .cipher-question {
+                padding: 10px;
+                font-size: 1rem;
+            }
+            
+            #cipherCode2 {
+                font-size: 1.3rem !important;
+            }
+            
+            .execute-btn,
+            .new-game-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                margin: 5px;
+                width: 100%;
+                max-width: 200px;
+            }
+            
+            .navigation-table-container,
+            .cipher-table-container {
+                overflow-x: auto;
+                padding: 10px 0;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .navigation-table th,
+            .navigation-table td {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+                padding: 3px;
+            }
+            
+            .cipher-table th,
+            .cipher-table td {
+                width: 30px;
+                height: 30px;
+                font-size: 1rem;
+                padding: 3px;
+            }
+            
+            .header h1 {
+                font-size: 1.3rem;
+            }
+            
+            .section-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* تحسينات إضافية للمس */
+        @media (hover: none) and (pointer: coarse) {
+            .navigation-table td:hover,
+            .cipher-table td:hover {
+                transform: none;
+                background: rgba(255, 255, 255, 0.1);
+            }
+            
+            .navigation-table td:active,
+            .cipher-table td:active {
+                transform: scale(0.95);
+                background: rgba(255, 255, 255, 0.3);
+            }
+            
+            .execute-btn:hover,
+            .new-game-btn:hover {
+                transform: none;
+            }
+            
+            .execute-btn:active,
+            .new-game-btn:active {
+                transform: scale(0.95);
             }
         }
     </style>
@@ -773,8 +885,6 @@
             }
         }
 
-
-
         // إنشاء هدف جديد
         function generateNewTarget() {
             do {
@@ -874,8 +984,6 @@
             createCipherGame();
         }
 
-
-
         // بدء اللعبة
         window.onload = function() {
             createNavigationTable();
@@ -883,5 +991,5 @@
             createCipherGame();
         };
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'989ecffd4543337b',t:'MTc1OTY4NzE2Mi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'989eeb982457ba98',t:'MTc1OTY4ODI5My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
